@@ -516,12 +516,12 @@ print(f'Silhouette Score pour Uber: {sil_score_uber}')
 sil_score_lyft = silhouette_score(reduced_matrix_lyft, kmeans_lyft.labels_)
 print(f'Silhouette Score pour Lyft: {sil_score_lyft}')
 
-# Calcul du score de silhouette global dans un espace à 8 dimensions (8 composantes principales)
+# Calcul du score de silhouette global dans un espace à 6 dimensions (6 composantes principales)
 silhouette_avg_uber = silhouette_score(df_pca_uber_components, labels_uber)
-print(f"Score moyen de silhouette uber (8D) : {silhouette_avg_uber:.4f}")
+print(f"Score moyen de silhouette uber (6D) : {silhouette_avg_uber:.4f}")
 
 silhouette_avg_lyft = silhouette_score(df_pca_lyft_components, labels_lyft)
-print(f"Score moyen de silhouette lyft (8D) : {silhouette_avg_lyft:.4f}")
+print(f"Score moyen de silhouette lyft (6D) : {silhouette_avg_lyft:.4f}")
 
 # Validation croisée avec Kfold pour évaluation de la stabilité des clusters
 
@@ -799,13 +799,12 @@ sns.scatterplot(data=df_pca_uber_components, x='PC1', y='PC2', hue='Cluster', pa
 
 # Projeter les centroïdes en 2D
 centroids_uber_2D = kmeans_uber.cluster_centers_
-#centroids_uber_2D = pca_2D.transform(centroids_uber_4D)  # Projeter en 2D
 
 # Affichage des centroïdes
 plt.scatter(centroids_uber_2D[:, 0], centroids_uber_2D[:, 1], c='black', marker='x', s=200, label='Centroides', linewidth=2)
 
 # Ajouter un titre et labels
-plt.title("Clustering K-Means (3 clusters) après PCA (2D) - Projection sur PC1 & PC2 (Uber)", fontsize=14)
+plt.title("Clustering K-Means (4 clusters) après PCA (2D) - Projection sur PC1 & PC2 (Uber)", fontsize=14)
 plt.xlabel("Composante Principale 1", fontsize=12)
 plt.ylabel("Composante Principale 2", fontsize=12)
 plt.legend(title="Cluster")
@@ -845,13 +844,12 @@ sns.scatterplot(data=df_pca_lyft_components, x='PC1', y='PC2', hue='Cluster', pa
 
 # Projeter les centroïdes en 2D
 centroids_lyft_2D = kmeans_lyft.cluster_centers_
-#centroids_lyft_2D = pca_2D.transform(centroids_lyft_4D)  # Projeter en 2D
 
 # Affichage des centroïdes
 plt.scatter(centroids_lyft_2D[:, 0], centroids_lyft_2D[:, 1], c='black', marker='x', s=200, label='Centroides', linewidth=2)
 
 # Ajouter un titre et labels
-plt.title("Clustering K-Means (3 clusters) après PCA (2D) - Projection sur PC1 & PC2 (Lyft)", fontsize=14)
+plt.title("Clustering K-Means (4 clusters) après PCA (2D) - Projection sur PC1 & PC2 (Lyft)", fontsize=14)
 plt.xlabel("Composante Principale 1", fontsize=12)
 plt.ylabel("Composante Principale 2", fontsize=12)
 plt.legend(title="Cluster")
