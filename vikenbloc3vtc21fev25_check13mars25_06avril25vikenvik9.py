@@ -434,20 +434,6 @@ cluster_summary_uber = df_pca_uber.groupby("Cluster")[columns_to_keep].mean()
 print("Résumé des caractéristiques des clusters pour Uber :")
 print(cluster_summary_uber)
 
-"""**Interprétation possible des clusters Uber**
-
--**Cluster 0** : Des courses en soirée, en milieu de semaine, plutôt urbaines, avec une température fraîche, un prix un peu élevé et du vent. Cela pourrait correspondre à des retours à la maison après le travail.
-
--**Cluster 1** : Courses en fin de matinée en semaine, température froide, humide, prix un peu moins élevé. Probablement des courses utilitaires, rendez-vous ou déplacements professionnels.
-
--**Cluster 2** : Des courses en périphérie, le week-end ou début de semaine, avec vent fort, humidité élevée, prix bas et distance courte. Cela pourrait correspondre à des trajets locaux ou résidentiels hors du centre.
-
--**Cluster 3** : Courses de nuit en semaine, au centre-ville, avec une distance courte mais prix élevé. Cela peut indiquer un effet de tarification nocturne ou surcharge (surge). Peut-être des trajets de fin de soirée ou début de matinée, après des sorties.
-
-
-
-"""
-
 # Visualisation des clusters Lyft dans un espace 2D avec composante principale n°1 et composante principale n°2
 
 # Appliquer un fond gris pour le style
@@ -485,28 +471,7 @@ cluster_summary_lyft = df_pca_lyft.groupby("Cluster")[columns_to_keep].mean()
 print("Résumé des caractéristiques des clusters pour Lyft :")
 print(cluster_summary_lyft)
 
-"""**Interprétation possible des clusters Lyft**
-
--**Cluster 0** : Courses en milieu de semaine, en matinée, avec forte humidité, peu de vent, prix modéré, dans le centre-ville. Cela peut refléter des trajets quotidiens réguliers (courses pro ou RDV).
-
--**Cluster 1** : Des courses de nuit en semaine, avec une humidité plus modérée, prix élevé, peut-être à cause d'une surcharge nocturne. Cela ressemble au cluster de nuit observé chez Uber aussi.
-
--**Cluster 2** : Courses en périphérie, le week-end ou en début de semaine, en matinée, distance et prix bas, mais conditions météo plus difficiles (vent et humidité). Cela évoque des trajets locaux ou résidents.
-
--**Cluster 3** : Courses de fin de journée, avec distance plus élevée, prix maximum, moins d'humidité, mais vent fort. Probablement des trajets de retour en soirée avec surcharge, typiques d’un usage pro ou domicile-travail.
-
-**Comparaison avec les clusters de Uber**
-
--**Cluster 0** : Bien qu’ils aient un lieu et jour similaires, ce ne sont pas les mêmes moments de la journée. Uber capture la fin de journée, alors que Lyft regroupe des courses de matinée. Uber semble profiter de trajets après le travail, alors que Lyft vise des utilisateurs en matinée, peut-être plus réguliers.
-
--**Cluster 1** : Ces clusters n’ont pas les mêmes horaires. Lyft regroupe les trajets de nuit, tandis qu'Uber est plus sur une matinée calme. Ce cluster Lyft pourrait refléter des courses nocturnes de sorties, avec des prix plus élevés (surcharge ?).
-
--**CLuster 2** : Très similaires entre Uber et Lyft. Courses locales, matinales, en début de semaine (ou week-end), en périphérie. Cela semble refléter des trajets résidentiels réguliers, à faible coût et courte distance.
-
--**Cluster 3** : Uber capture ici les courses nocturnes, tandis que Lyft cible les retours du soir, avec un prix et une température plus élevés. Uber a ici des trajets “after hours”, Lyft est plus en phase avec des horaires de pointe.
-
-5- Evaluation du modèle
-"""
+"""5- Evaluation du modèle"""
 
 # Calcul du Silhouette Score pour Uber
 sil_score_uber = silhouette_score(reduced_matrix_uber, kmeans_uber.labels_)
@@ -557,53 +522,6 @@ print(f'Inertie pour Uber: {inertia_uber}')
 # Inertie pour Lyft
 inertia_lyft = kmeans_lyft.inertia_
 print(f'Inertie pour Lyft: {inertia_lyft}')
-
-"""**Analyse des métriques d'évaluation**
-
-**Silhouette score**
-
-Interprétation des résultats :
-
-Silhouette Score pour Uber : 0.262
-
-Silhouette Score pour Lyft : 0.264
-
-Ces scores sont relativement faibles, ce qui indique que les clusters pour Uber et Lyft ne sont pas particulièrement bien séparés. Cela suggère que le modèle de clustering pourrait être amélioré, car les points au sein de chaque cluster ne sont pas très éloignés de ceux des autres clusters. Cependant, les scores sont très similaires pour Uber et Lyft, ce qui montre que la séparation des clusters est globalement comparable entre les deux services.
-
-Score moyen de silhouette (pour 6 dimensions) :
-
-Uber : 0.2886
-
-Lyft : 0.2953
-
-Ces scores sont un peu plus élevés que les scores de silhouette pour les clusters d'origine, ce qui indique que, lorsqu'on prend en compte 6 dimensions (probablement une approche avec plus de variables), la séparation des clusters devient légèrement meilleure.
-
-**Inertie**
-
-Inertie pour Uber : 26,035.93
-
-Inertie pour Lyft : 22,346.53
-
-L'inertie est plus faible pour Lyft que pour Uber, ce qui suggère que, pour les mêmes paramètres de clustering, les points de Lyft sont globalement plus proches de leurs centres de clusters que ceux d'Uber. Cela pourrait signifier que le modèle de clustering est légèrement plus cohérent ou compact pour Lyft, même si les scores de silhouette ne sont pas très élevés.
-
-Moyenne de l'inertie pour Uber (KFold) : 3,546.74
-
-Moyenne de l'inertie pour Lyft (KFold) : 4,117.91
-
-L'inertie moyenne sur les splits KFold est également plus faible pour Uber que pour Lyft, ce qui montre que les clusters formés à partir des données Uber sont plus stables et homogènes (ils ont des points qui sont plus proches de leurs centres à travers différents sous-ensembles de données). Cela pourrait aussi signifier que la méthode de clustering est mieux adaptée pour Uber en termes de variance et de stabilité dans différents ensembles de données.
-
-Synthèse :
-
-Silhouette Scores faibles (0.26 et 0.27) pour Uber et Lyft suggèrent que les clusters ne sont pas parfaitement bien séparés, mais les deux services sont relativement similaires à cet égard.
-
-Inertie plus faible pour Lyft (22,346.53 contre 26,035.93) suggère que les clusters Lyft sont plus compacts et mieux regroupés, tandis qu'Uber présente une plus grande dispersion.
-
-Inertie moyenne sur KFold plus faible pour Uber (3,546.74 contre 4,117.91) montre que, sur différents sous-ensembles de données, les clusters Uber sont plus stables et cohérents.
-
-Globalement, on peut conclure que Lyft a des clusters un peu plus compacts, mais Uber montre une meilleure stabilité sur les différents sous-ensembles de données, même si les deux services ont des scores de silhouette similaires indiquant une séparation modérée des clusters. Pour améliorer les résultats de clustering, il pourrait être utile d'explorer différentes méthodes ou de réajuster les paramètres de clustering.
-
-=> Décision de réajuster les paramètres du clustering
-"""
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
@@ -823,15 +741,6 @@ cluster_summary_uber = df_uber_opti.groupby("Cluster")[columns_to_keep].mean()
 print("Résumé des caractéristiques des clusters pour Uber :")
 print(cluster_summary_uber)
 
-"""**-Cluster 0 :**  Ce cluster semble correspondre à des trajets effectués en soirée, avec une température modérément froide, une distance relativement courte et un prix modéré. L'humidité élevée pourrait indiquer des conditions météorologiques plus humides.
-
-**-Cluster 1 :** Ce cluster semble indiquer des trajets matinaux avec une température froide, mais une distance plus longue que dans le Cluster 0. L'humidité très élevée pourrait être liée à des conditions de matinée avec de la brume ou de la pluie. Le prix plus élevé pourrait suggérer des trajets dans des zones avec une demande plus importante.
-
-**-Cluster 2 :** Ce cluster ressemble à des trajets en soirée, avec une température plus élevée que celle du Cluster 0. La distance est plus longue et le prix également plus élevé. L'humidité élevée indique des conditions similaires au Cluster 0, mais avec des trajets plus longs et potentiellement plus chers.
-
-**-Cluster 3 :** Ce cluster représente des trajets matinaux dans des conditions très froides, avec une distance courte et un prix relativement bas. L'humidité est encore assez élevée, suggérant une matinée potentiellement humide ou brumeuse.
-"""
-
 # Visualisation des clusters Lyft dans un espace 2D avec composante principale n°1 et composante principale n°2
 
 # Appliquer un fond gris pour le style
@@ -867,45 +776,6 @@ cluster_summary_lyft = df_lyft_opti.groupby("Cluster")[columns_to_keep].mean()
 # Afficher les moyennes
 print("Résumé des caractéristiques des clusters pour Lyft :")
 print(cluster_summary_lyft)
-
-"""**-Cluster 0 :** Ce cluster correspond à des trajets matinaux dans des conditions froides et humides, avec des distances relativement courtes et un prix modéré. L'humidité très élevée suggère que les trajets peuvent se produire par temps de pluie ou de brume, ce qui pourrait expliquer des prix bas (peu de demande pendant ces conditions).
-
-**-Cluster 1 :**  Ce cluster représente des trajets en soirée, avec une température légèrement plus élevée que celle du Cluster 0. Les distances restent courtes et les prix sont modérés. L'humidité est plus faible que dans le Cluster 0, ce qui pourrait indiquer des conditions météorologiques moins défavorables. Le prix bas pourrait être associé à une demande faible durant cette période.
-
-**-Cluster 2 :** Ce cluster semble correspondre à des trajets matinaux dans des conditions de froid extrême. Bien que les trajets soient plus longs que dans les autres clusters, le prix est également plus élevé. L'humidité relativement élevée indique que les trajets peuvent se produire sous des conditions météorologiques de brume, de pluie ou de neige. Cela pourrait expliquer la distance plus longue et le prix plus élevé, en raison d'une plus grande demande ou de conditions de conduite plus difficiles.
-
-**-Cluster 3 :** Ce cluster représente également des trajets en soirée, avec des températures fraîches. Les distances sont plus longues et les prix plus élevés par rapport aux autres clusters. L'humidité modérée indique des conditions météorologiques moins extrêmes, mais les trajets plus longs et les prix plus élevés suggèrent une demande plus élevée ou des trajets dans des zones plus éloignées.
-
-**Comparaison des clusters Uber et Lyft**
-
-Heure des trajets :
-
-Uber tend à avoir des trajets plus variés entre le matin et le soir (6 AM et 6 PM), avec un pic notable le soir dans les clusters 0 et 2.
-
-Lyft a une tendance plus marquée vers les trajets matinaux (autour de 6 AM), sauf pour le Cluster 3 (en soirée).
-
-Température :
-
-Uber a des températures assez froides, avec une gamme allant de 34.57°F à 44.80°F.
-
-Lyft a des températures qui varient entre 35.44°F et 42.63°F, légèrement plus froides dans certains clusters, mais généralement plus chaudes que celles de Uber.
-
-Distance et Prix :
-
-Uber semble avoir une gamme de distances et de prix plus modérés, avec des trajets plus courts dans certains clusters et des prix plus faibles, en particulier dans le Cluster 0.
-
-Lyft, en revanche, a des trajets globalement plus longs et des prix plus élevés, particulièrement dans les clusters 2 et 3.
-
-Humidité :
-
-Uber semble avoir une humidité plus élevée dans les trajets matinaux (Cluster 1 et Cluster 0).
-
-Lyft a également des niveaux d'humidité assez élevés, mais globalement plus faibles que ceux d'Uber, sauf dans le Cluster 0 où elle atteint des niveaux élevés.
-
-Conclusion :
-
-Les clusters de Lyft et Uber partagent des caractéristiques similaires en termes de température et d'humidité, mais avec des différences notables concernant l'heure des trajets, les distances parcourues, et les prix. Lyft tend à avoir des trajets plus longs avec des prix plus élevés, tandis qu'Uber semble offrir des trajets plus courts et moins coûteux, particulièrement en soirée. Les conditions météorologiques influencent fortement la demande chez Lyft.
-"""
 
 # Calcul du score de silhouette global dans un espace à 8 dimensions (8 composantes principales)
 silhouette_score_uber = silhouette_score(df_pca_uber_components, labels_uber)
@@ -947,70 +817,7 @@ print(f'Inertie pour Uber: {inertia_uber}')
 inertia_lyft = kmeans_lyft.inertia_
 print(f'Inertie pour Lyft: {inertia_lyft}')
 
-"""**Analyse des métriques d'évaluation**
-
-**Silhouette score**
-
-Uber (2D) : 0.6109
-
-Lyft (2D) : 0.5983
-
-Interprétation :
-
-Uber (0.6109) : Un score de 0.6109 est relativement élevé, ce qui indique que les clusters pour Uber sont bien séparés et que la majorité des points de données sont correctement assignés à leurs clusters respectifs. Cela signifie que les clusters sont relativement compacts et distincts les uns des autres.
-
-Lyft (0.5983) : Un score de 0.5983 est légèrement inférieur à celui d'Uber, mais reste également un score acceptable. Cela suggère que les clusters pour Lyft sont également bien séparés, mais peut-être légèrement moins distincts ou plus "flous" que ceux d'Uber. Cependant, cette différence est minime, donc la qualité du clustering pour Lyft est encore assez bonne.
-
-En résumé, Uber a un léger avantage en termes de la clarté de ses clusters par rapport à Lyft, mais les deux services ont des clusters assez compacts et distincts.
-
-**Inertie moyenne (KFold)**
-
-Moyenne de l'inertie pour Uber (KFold) : 3238.72
-
-Moyenne de l'inertie pour Lyft (KFold) : 5384.17
-
-Interprétation :
-
-Uber (3238.72) : L'inertie pour Uber est plus faible, ce qui signifie que les clusters sont plus compacts et mieux définis. Les points de données dans chaque cluster sont plus proches du centre, ce qui est un signe positif de la qualité du clustering.
-
-Lyft (5384.17) : L'inertie pour Lyft est plus élevée, ce qui suggère que les clusters sont moins compacts et que les points de données sont un peu plus dispersés autour du centre du cluster. Cela peut indiquer une moins bonne séparation ou une plus grande variance au sein des clusters.
-
-En résumé, Uber montre des clusters plus compacts, tandis que les clusters de Lyft sont légèrement moins denses et plus dispersés.
-
-Interprétation :
-
-***Inertie***
-
-Uber (4049.43) :
-
-L'inertie pour Uber est plus élevée, ce qui signifie que les points de données dans les clusters d'Uber sont plus éloignés de leurs centres respectifs. En d'autres termes, les clusters sont moins compacts, et les données sont plus dispersées dans chaque cluster.
-
-Cela peut indiquer que le modèle de clustering pour Uber a du mal à regrouper les points de manière très homogène, ou que les clusters eux-mêmes sont plus larges et moins bien définis.
-
-Lyft (3273.99) :
-
-L'inertie pour Lyft est plus faible que celle d'Uber, ce qui signifie que les clusters de Lyft sont plus compacts et que les points de données sont plus proches du centre de leurs clusters respectifs.
-
-Cela suggère que le modèle de clustering pour Lyft a généré des clusters plus homogènes et plus denses, avec une meilleure définition des groupes.
-
-Comparaison entre Uber et Lyft :
-Lyft a une inertie plus faible que Uber, ce qui indique des clusters plus compacts et plus bien définis.
-
-Uber, en revanche, présente des clusters qui sont plus dispersés, avec des points de données plus éloignés du centre, ce qui entraîne une inertie plus élevée.
-
-Les clusters pour Lyft semblent être plus bien séparés et cohérents, tandis que ceux pour Uber sont plus dispersés, ce qui peut indiquer que le modèle de clustering pour Lyft est mieux adapté ou que les données de Lyft sont naturellement plus homogènes par rapport à celles d'Uber.
-
-En résumé :
-
-Lyft montre une meilleure compacité des clusters (inertie plus faible), suggérant des regroupements plus cohérents et denses.
-
-Uber a des clusters plus dispersés (inertie plus élevée), ce qui peut indiquer une moins bonne séparation ou des clusters plus larges et moins homogènes.
-
-Cela signifie que, dans l'ensemble, Lyft a un modèle de clustering plus efficace et compact comparé à Uber, du moins en fonction de l'inertie.
-
-**Actions de suite:**
-
--Appliquer d’autres techniques de prétraitement des données pour réduire le bruit.
-
+"""**Actions de suite:**
 -Essayer d’autres algorithmes comme DBSCAN (si les clusters ne sont pas de forme sphérique) ou Gaussian Mixture Models (GMM) pour capturer des structures plus complexes
+
 """
