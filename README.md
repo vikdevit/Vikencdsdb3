@@ -1,1 +1,1 @@
-Analyse de données structurées par l'IA avec algorithme de clustering
+Analyse de données structurées par l'IA (machine learning) avec algorithme de clustering
